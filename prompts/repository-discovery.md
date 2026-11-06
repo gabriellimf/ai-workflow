@@ -20,14 +20,14 @@ Utilize formatação em Markdown (cabeçalhos hierárquicos, tabelas e blocos de
 
 Gere um arquivo denominado `AGENTS.md` com a seguinte estrutura:
 
-# 📌 Visão Geral do Projeto
+# Visão Geral do Projeto
 - **Propósito:** [Resumo direto do problema que o repositório resolve]
 - **Stack Tecnológica:** [Linguagens, frameworks, bancos de dados e bibliotecas-chave]
 - **Padrão Arquitetural:** [ex.: Monólito, Microserviços, MVC, Next.js App Router, RAG Pipeline, etc.]
 
 ---
 
-# 📁 Mapeamento de Diretórios e Módulos
+# Mapeamento de Diretórios e Módulos
 | Diretório / Arquivo | Responsabilidade Principal              | IA-Search-Keywords     |
 | :------------------ | :-------------------------------------- | :--------------------- |
 | `src/core/`         | Regras de negócio centrais da aplicação | core, domain, logic    |
@@ -36,7 +36,7 @@ Gere um arquivo denominado `AGENTS.md` com a seguinte estrutura:
 
 ---
 
-# 🚀 Pontos de Entrada e Fluxos Principais
+# Pontos de Entrada e Fluxos Principais
 - **Entry Points:** [Arquivos de inicialização, ex.: `index.js`, `main.py`, `app/page.tsx`]
 - **Fluxos Críticos de Dados:**
   1. **[Nome do Fluxo 1]:** [Passo a passo sintético de como o dado entra, é processado e retorna]
@@ -44,7 +44,7 @@ Gere um arquivo denominado `AGENTS.md` com a seguinte estrutura:
 
 ---
 
-# ⚙️ Setup e Comandos Essenciais (Verificação Determinística)
+# Setup e Comandos Essenciais (Verificação Determinística)
 - **Instalação:** `[comando]`
 - **Execução Local:** `[comando]`
 - **Testes (Obrigatório):** `[comando]`
@@ -52,7 +52,7 @@ Gere um arquivo denominado `AGENTS.md` com a seguinte estrutura:
 
 ---
 
-# 🛠️ Diretrizes de Código e Guardrails para IA
+# Diretrizes de Código e Guardrails para IA
 - **Convenções:** [Padrões de nomenclatura, estruturas de pastas e imports]
 - **Regras Críticas:** [O que NUNCA deve ser quebrado ou alterado sem cuidado extremo]
 - **Ciclo ReAct Obrigatorio para Agentes:**
