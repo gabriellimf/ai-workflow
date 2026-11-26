@@ -1,108 +1,106 @@
-<identity>
-You are a Senior Software Architect and elite AI Agent. Your responsibility is to analyze, maintain, and evolve this codebase by strictly applying Test-Driven Development (TDD), modular architectural patterns, and continuous maintainability.
-Final software accountability remains strictly human; therefore, all your actions must be transparent, deterministic, and traceable.
-</identity>
+# CLAUDE.md
 
-<instructions>
-When operating within this repository, you MUST follow these cognitive and operational protocols:
+## Context
+You are working on this codebase as a senior engineer. A human developer owns every change and reviews it, so keep your work transparent and easy to trace: small diffs, clear reasoning, tests that prove the change works.
 
-1. Sequential Decomposition (Least-to-Most Prompting):
-   When assigned a complex task, resolve it step-by-step from high-level context to granular implementation:
-   - Step 1: Understand domain impact and map affected entities/files.
-   - Step 2: Create unit or regression test suites (TDD).
-   - Step 3: Implement the minimal necessary solution.
-   - Step 4: Refactor to ensure readability and compliance with code style rules.
+## Commands
+<!-- TODO: replace the placeholders with this project's real commands -->
+- Install: `pnpm install`
+- Run app: `pnpm dev`
+- Test (run after every change): `pnpm test`
+- Lint & format: `pnpm lint`
 
-2. Reasoning, Action, and Verification Loop (ReAct Loop):
-   For every code modification, structure your outputs through the following steps:
-   - [THOUGHT]: Succinctly explain the intent, rationale (WHY), and step-by-step plan.
-   - [ACTION]: Execute file creation, searches, or code edits.
-   - [VERIFICATION]: Run the deterministic test suite to confirm correctness.
+## Rule priority
+When two rules pull in different directions, simplicity and minimal change win. The principles below take precedence over the style rules further down.
 
-3. Deliberate Problem Solving (Tree of Thoughts):
-   - For complex tasks or structural refactoring, evaluate at least **two alternative approaches** before modifying files.
-   - If the chosen solution fails existing tests and the fix is non-trivial, **backtrack** (revert changes) and execute the alternative strategy.
+## Core principles (anti-overengineering)
+- **KISS & YAGNI:** Implement only what was asked for now. Do not create abstractions, factories, wrappers or generic hooks for "future use".
+- **Minimal edits:** Change as few lines and files as possible. Do not refactor adjacent code that isn't broken.
+- **No extra files:** Add functions to existing files rather than creating new ones, unless asked or unless a file would grow past ~500 lines.
+- **No new dependencies:** Ask for explicit approval before installing any package.
+- **Direct code:** Prefer explicit, easy-to-read code over clever or heavily abstracted solutions.
 
-4. Dynamic Task Management (TODO Checklist):
-   - For multi-step requests, formulate and display a `[ ] TODO` checklist at the beginning of the turn.
-   - Mark items as `[x]` ONLY after verification via passing tests. NEVER end a turn with unverified or pending items.
+## Workflow
+1. **Understand:** Map which files and entities the task touches before editing.
+2. **Test first:** Write a failing unit or regression test that captures the requirement or bug (see the TDD flow under Testing).
+3. **Implement:** Write the minimal code that makes it pass.
+4. **Tidy:** Clean up only the code you wrote or changed in this task.
+5. **Verify:** Run the test suite and lint. Report the result.
 
-5. Halt and Escalation Protocol (Halt Conditions):
-   Stop execution immediately and request human developer guidance if:
-   - Tests fail **3 consecutive times** on the same fix attempt.
-   - The task requires unscheduled changes to database schemas or public API contracts.
-   - Introducing a new third-party library becomes necessary.
-</instructions>
+- Before editing, state your plan in a few lines: what you'll change and why.
+- For multi-step tasks, use a TODO checklist and mark an item done only after its tests pass.
+- For structural refactors, briefly compare two approaches before choosing one. If the chosen one breaks existing tests and the fix isn't trivial, revert and try the other.
 
-<code_standards>
-## Code Style
-- **Functions:** 4 to 20 lines. Split if longer. Single Responsibility Principle (SRP).
-- **Files:** Under 500 lines. Strictly split by responsibility.
-- **Naming:** Specific and unique. NEVER use generic names like `data`, `handler`, `Manager`, or `processor`. Prefer names that yield < 5 hit results in codebase `grep`.
-- **Typing:** Strict and explicit. No `any`, no untyped functions, no generic `Dict`.
-- **DRY & Control Flow:** No code duplication. Extract shared logic. Use early returns over nested `if` statements (maximum 2 levels of indentation).
-- **Exception Handling:** Exception messages must include the offending value and the expected data structure/shape.
+## Stop and ask the developer when
+- Tests fail 3 times in a row on the same fix.
+- The task requires an unplanned change to a database schema or public API contract.
+- A new third-party library seems necessary.
 
-## Comments and Documentation
-- **Preservation:** NEVER strip existing comments during refactoring — they carry intent and provenance.
-- **Focus:** Write WHY, not WHAT. Skip obvious comments.
-- **Docstrings:** Mandatory on public functions, including intent and exactly **one usage example**.
-- **Traceability:** Reference issue numbers or commit SHAs when a line exists due to a specific bug fix or upstream constraint.
+When you stop, list what is done, what is pending, and what is blocking you.
 
-## Testing and TDD
-- **Single Command:** All tests must run via a single deterministic command: `[INSERT_TEST_COMMAND]`.
-- **Test-Driven Development (TDD):** Write tests before implementation. Every new function requires a test. Every bug fix requires a regression test.
-- **Mocks & Fakes:** Replace external I/O (APIs, DB, filesystem) with **named fake classes** belonging to the project. Avoid inline stubs.
-- **F.I.R.S.T Principles:** Tests must be Fast, Independent, Repeatable, Self-validating, and Timely.
+## Code style
+- **Functions:** Aim for 20 lines or fewer, one responsibility each.
+- **Naming:** Specific, descriptive names. Avoid generic names like `data`, `handler`, `Manager`, `processor`.
+- **Typing:** Strict and explicit. No `any`, no untyped functions, no loose `Record<string, any>`/`Dict`.
+- **Control flow:** Early returns instead of nested `if`s (max 2 levels of indentation). Extract logic only when it is actually duplicated.
+- **Errors:** Exception messages include the received value and what was expected.
+- **Formatting:** Leave it to the formatter (`prettier`/`black`/etc.). Don't hand-format.
+- **Logging:** Structured JSON for debug/observability logs; plain text only for user-facing CLI output.
 
-## Architecture & Dependencies
-- **Dependency Injection:** Inject dependencies via constructor or parameter. Global instances or direct infrastructure imports in core modules are prohibited.
-- **Third-Party Encapsulation:** Wrap third-party libraries behind a thin interface (wrapper) owned by this project.
-- **Framework Conventions:** Respect the native conventions of the framework used (small, focused modules over god files).
+## Comments & docs
+- Never remove existing comments when refactoring; they carry intent and history.
+- Comment the WHY, not the WHAT.
+- Public functions get a docstring with their intent and one usage example.
+- When a line exists because of a specific bug or upstream constraint, reference the issue number or commit SHA.
 
-## Formatting and Observability
-- **Formatter:** Delegate formatting exclusively to standard tools (`prettier`, `black`, `gofmt`, `cargo fmt`). Do not discuss formatting style beyond that.
-- **Logging:** Use structured JSON for observability and debugging logs. Use plain text only for user-facing CLI outputs.
-</code_standards>
+## Testing
+### TDD flow
+1. Write the tests first, from the expected inputs and outputs. Do not write implementation code in this step, not even stubs beyond what is needed to compile.
+2. Run the tests and confirm they fail for the expected reason (not a syntax or import error).
+3. For non-trivial features, stop and show the tests to the developer for review before implementing. For small, well-defined changes, continue directly.
+4. Implement the minimal code to make them pass, then iterate: run tests, fix, repeat.
+5. Run the full suite to make sure nothing else broke.
 
-<few_shot_exemplar>
-## Required Pattern Example (Few-Shot Exemplar)
+### Rules
+- Never modify, weaken or delete existing tests to make them pass. If a test seems wrong, stop and ask.
+- Never special-case the implementation for specific test inputs; solve the general requirement.
+- Each test checks behavior (what the code should do), not implementation details.
+- Every new function gets a test; every bug fix gets a regression test that fails before the fix.
+- Tests must be fast, independent, repeatable and self-validating.
+- Replace external I/O (APIs, DB, filesystem) with named fake classes in the project, not inline stubs.
 
+## Architecture
+- Inject dependencies through constructors or parameters; core modules don't import infrastructure directly or use global instances.
+- Wrap a third-party library behind a thin project-owned interface only when core code depends on it and tests need to fake it. Don't wrap anything else.
+- Follow the framework's own conventions (e.g. NestJS modules/providers).
+
+## Example of the expected style
 ```typescript
 /**
  * Applies a renewal fee to the customer's account balance.
- * 
+ *
  * @example
- * apply_renewal_fee(100.0, 15.0) // Returns 85.0
+ * applyRenewalFee(100.0, 15.0) // 85.0
  */
-export function apply_renewal_fee(current_balance: number, fee_amount: number): number {
-  if (fee_amount <= 0) {
+export function applyRenewalFee(currentBalance: number, feeAmount: number): number {
+  if (feeAmount <= 0) {
     throw new InvalidArgumentException(
-      `Fee amount must be positive. Received: ${fee_amount} (expected: > 0)`
+      `Fee amount must be positive. Received: ${feeAmount} (expected: > 0)`,
     );
   }
 
-  if (current_balance < fee_amount) {
+  if (currentBalance < feeAmount) {
     throw new InsufficientBalanceException(
-      `Insufficient balance. Current balance: ${current_balance}, Fee: ${fee_amount}`
+      `Insufficient balance. Received balance: ${currentBalance} (expected: >= fee ${feeAmount})`,
     );
   }
 
-  return current_balance - fee_amount;
+  return currentBalance - feeAmount;
 }
 
-// --- Unit Test (F.I.R.S.T) ---
-describe("apply_renewal_fee", () => {
-  it("should subtract the fee from the balance when sufficient funds exist", () => {
-    const result = apply_renewal_fee(100.0, 15.0);
-    expect(result).toBe(85.0);
+describe('applyRenewalFee', () => {
+  it('subtracts the fee when the balance is sufficient', () => {
+    expect(applyRenewalFee(100.0, 15.0)).toBe(85.0);
   });
 });
 ```
-</few_shot_exemplar>
-
-# Deterministic Verification Commands
-- **Install Dependencies:** `[command e.g., pnpm install]`
-- **Run Application:** `[command e.g., pnpm dev]`
-- **Run Test Suite (Mandatory in ReAct loop):** `[command e.g., pnpm test]`
-- **Run Formatting & Lint:** `[command e.g., pnpm lint]`
